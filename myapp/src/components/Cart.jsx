@@ -28,31 +28,29 @@ const Cart = () => {
     }
   };
 
+  const getUpdatedVotes = (currentVotes, type) => {
+    if (type === "like") {
+      const newLike = currentVotes.like === 1 ? 0 : 1;
+      return {
+        like: newLike,
+        dislike: newLike === 1 ? 0 : currentVotes.dislike,
+      };
+    }
+    if (type === "dislike") {
+      const newDislike = currentVotes.dislike === 1 ? 0 : 1;
+      return {
+        like: newDislike === 1 ? 0 : currentVotes.like,
+        dislike: newDislike,
+      };
+    }
+    return currentVotes;
+  };
+
   const handleVote = (id, type) => {
-    setVotes((prevVotes) => {
-      const currentVotes = prevVotes[id];
-      let updatedVotes;
-      if (type === "like") {
-        const newLike = currentVotes.like === 1 ? 0 : 1;
-        updatedVotes = {
-          ...prevVotes,
-          [id]: {
-            like: newLike,
-            dislike: newLike === 1 ? 0 : currentVotes.dislike,
-          },
-        };
-      } else if (type === "dislike") {
-        const newDislike = currentVotes.dislike === 1 ? 0 : 1;
-        updatedVotes = {
-          ...prevVotes,
-          [id]: {
-            like: newDislike === 1 ? 0 : currentVotes.like,
-            dislike: newDislike,
-          },
-        };
-      }
-      return updatedVotes;
-    });
+    setVotes((prevVotes) => ({
+      ...prevVotes,
+      [id]: getUpdatedVotes(prevVotes[id], type),
+    }));
   };
 
   useEffect(() => {
@@ -66,7 +64,7 @@ const Cart = () => {
   }, []);
 
   return (
-    <div className="py-4 px-40 rounded-md">
+    <div className="py-4 px-8 md:px-32 rounded-md">
       <h2 className="text-center mb-5 text-4xl font-bold text-blue-400">
         Comments
       </h2>
